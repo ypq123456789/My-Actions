@@ -3,7 +3,7 @@ name: V2ex签到
 on:
   workflow_dispatch:
   schedule:
-    - cron: '1 0 * * *'
+    - cron: '0 16 * * *'
   watch:
     types: [started]
 
@@ -44,4 +44,3 @@ jobs:
           GOBOT_QQ: ${{ secrets.GOBOT_QQ }}
           GOBOT_TOKEN: ${{ secrets.GOBOT_TOKEN}}
           OS_TZ: ${{ secrets.OS_TZ }}
-#最后推送 2021年4月09日
