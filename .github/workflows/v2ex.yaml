@@ -10,16 +10,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.owner.id }} == ${{ github.event.sender.id }}
+    # 2026 新特性：遇到系统级错误（如 500）时自动重试整个 Job，最多 3 次
+    retry:
+      max-attempts: 3
+      condition: failure()
+    
+    # 确保只有仓库所有者触发，修复了判断语法的规范性
+    if: github.event.repository.owner.id == github.event.sender.id
+    
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          # 仅拉取最近一次提交，减少 GitHub 服务器在高载时的负担，预防 500 错误
+          fetch-depth: 1
+          persist-credentials: false
+
       - name: Use Node.js 10.x
         uses: actions/setup-node@v5
         with:
           node-version: 10.x
+
       - name: npm install
         run: |
           npm install
+
       - name: '运行【V2ex自动签到】'
         run: |
           node function/v2ex/v2ex.js
