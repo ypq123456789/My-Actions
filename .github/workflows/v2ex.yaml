@@ -3,33 +3,23 @@ name: V2ex签到
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '0 14 * * *'
   watch:
     types: [started]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 修复了 if 判断的语法，确保其在 Job 级别正确运行
-    if: github.event.repository.owner.id == github.event.sender.id
-    
+    if: ${{ github.event.repository.owner.id }} == ${{ github.event.sender.id }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          # 通过只拉取最后一层提交，减少 GitHub 服务器负担，预防 500 错误
-          fetch-depth: 1
-          persist-credentials: false
-
+      - uses: actions/checkout@v5
       - name: Use Node.js 10.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 10.x
-
       - name: npm install
         run: |
           npm install
-
       - name: '运行【V2ex自动签到】'
         run: |
           node function/v2ex/v2ex.js
@@ -54,3 +44,4 @@ jobs:
           GOBOT_QQ: ${{ secrets.GOBOT_QQ }}
           GOBOT_TOKEN: ${{ secrets.GOBOT_TOKEN}}
           OS_TZ: ${{ secrets.OS_TZ }}
+#最后推送 2021年4月09日
